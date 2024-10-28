@@ -53,10 +53,10 @@ const Home = () => {
   const [title, setTitle] = useState('');
   const [extent, setExtent] = useState('');
   const extentref = useRef('');
-  const titleref = useRef('%');
-  const countryref = useRef('%');
-  const datatyperef = useRef('%');
-  const projectref = useRef('%');
+  const titleref = useRef('all');
+  const countryref = useRef('all');
+  const datatyperef = useRef('all');
+  const projectref = useRef('all');
   const isMarkerRef = useRef();
   const positionRef = useRef([0.878032, 185.843298]);
   const zoomRef = useRef(3);
@@ -65,7 +65,7 @@ const Home = () => {
   const countryFlagRef = useRef(require('../flags/FJI.png'))
   const [loading, setLoading] =useState(true);
   const [obsSource, setobsSource] =useState([]);
-  const [parameter, setParameter]  = useState([{key:'%',label:"%"}]);
+  const [parameter, setParameter]  = useState([{key:'all',label:"%"}]);
   const [parameterlist,setParameterlist] = useState([]);
   const [country, setCountry]  = useState();
   const [countrylist,setCountrylist] = useState([]);
@@ -73,9 +73,11 @@ const Home = () => {
   const [datatypelist,setDatatypelist] = useState([]);
   const [project, setProject]  = useState('');
   const [projectlist,setProjectlist] = useState([]);
-  const [tag, setTag]  = useState([{key:'%',label:"%"}]);
+  const [openlist,setOpenlist] = useState([]);
+  const openRef = useRef('all')
+  const [tag, setTag]  = useState([{key:'all',label:"all"}]);
   const [taglist,setTaglist] = useState([]);
-  const [topic, setTopic]  = useState([{key:'%',label:"%"}]);
+  const [topic, setTopic]  = useState([{key:'all',label:"all"}]);
   const [topiclist,setTopiclist] = useState([]);
   const [checked, setChecked] = React.useState(false);
   const [token, setToken] = React.useState(null);
@@ -90,37 +92,6 @@ const Home = () => {
     setinfoshow22(false)
   };
 
-  const handleUpdate = () => {
-    const obj = JSON.parse(metadata);
-    
-            const header = {
-              'Content-Type': 'application/json',
-              'x-access-token': token
-            }
-            axios.put('https://opmdata.gem.spc.int/api/metadata/'+obj.id, obj, {headers:header})
-              .then(response2 => {
-                setinfoshow2(false)
-                setCss('btn btn-success')
-                setHeader('Success')
-                setMessage(response2.data.message)
-                setinfoshow22(true)
-            //    window.location.reload();
-            }).catch((error) => {
-              setinfoshow2(false)
-              setCss('btn btn-danger')
-              setHeader('Error')
-              setMessage('Opps! An Error Occurred. Please contact Administrator.')
-              setinfoshow22(true)
-          });
-            
-  
-          
-  };
-  
-  const handleClick = (e) => {
-      setChecked(!checked)
-      e.currentTarget.blur();
-    }
 
   const getPlayerData = async (e) => {
       try{
@@ -136,63 +107,13 @@ const Home = () => {
           
         });
         if (checked){
-          /*if (datatyperef.current === "%"){
-            setCss('btn btn-warning')
-            setHeader('Warning')
-            setMessage("Data Type is a Required Field.")
-            setinfoshow22(true)
-          }
-          else{*/
-          setLoading(false)
-          setobsSource([])
-          var myarray = extent.split(',');
-          var minx = myarray[3];
-          var maxx = myarray[2];
-          var miny = myarray[1];
-          var maxy = myarray[0];
-          const data2 = await axios.get("https://opmdata.gem.spc.int/api/metadata/findByExtent?minx="+minx+"&maxx="+maxx+"&miny="+miny+"&maxy="+maxy+"&datatype="+datatyperef.current);
-          let counter = 1;
-          
-          for (var i=0; i<data2.data.length; i++){
-              let temp = [];
-              var countryx = data2.data[i].countries[0].country_name;
-              var desc = data2.data[i].title;
-              var titlex = data2.data[i].description;
-              var datatypex = data2.data[i].data_type.datatype_code;
-              var projectx = data2.data[i].project.project_code;
-              var is_restrictedx = data2.data[i].is_restricted;
-              var emailx = data2.data[i].contact.email;
-              var versionx = data2.data[i].version;
-              temp.push({
-                  "id":counter,
-                  "idx":data2.data[i].id,
-                  "desc":desc,
-                  "title":titlex,
-                  "datatype":datatypex,
-                  "country":countryx.toString(),
-                  "project":projectx,
-                  "is_restricted":is_restrictedx,
-                  "email":emailx,
-                  "version":versionx
-              })
-              counter = counter + 1;
-              setobsSource(prevData =>[...prevData, ...temp]);
-          }
-
-          setLoading(true)
-      //  }
+       
         }
         else{
-          if (countryref.current === "%" || datatyperef.current === "%"){
-            setCss('btn btn-warning')
-            setHeader('Warning')
-            setMessage("Country and Data Type are Required Fields.")
-            setinfoshow22(true)
-          }
-          else{
+            //NEWWWW
+            console.log(titleref.current, datatyperef.current, projectref.current, countryref.current, openRef.current, tag[0].key, topic[0].key)
           setLoading(false)
           setobsSource([])
-          console.log(parameter, tag,topic)
           const params = {
               title:titleref.current,
               datatype_id:datatyperef.current,
@@ -203,42 +124,32 @@ const Home = () => {
               project:projectref.current
           
           }
-          console.log(params)
-          /*
-          const params = {
-            title:'%',
-            datatype_id:'%',
-            country:'%',
-            parameters:'%',
-            tag:'%',
-            topic:'%',
-            project:'%'
-        
-        }
-        console.log(params)
-        */
+
+        console.log('anujjj')
        var marker;
-          const data2 = await axios.post("https://opmdata.gem.spc.int/api/metadata/findByMultipleParam", params);
+          //const data2 = await axios.get("https://dev-oceanportal.spc.int/dbms/api/dataset/?format=json");
+          const data2 = await axios.get("https://dev-oceanportal.spc.int/dbms/api/dataset/?SpatialInfo="+countryref.current+"&Tag="+tag[0].key+"&Topic="+topic[0].key+"&dataType="+datatyperef.current+"&format=json&openAccess="+openRef.current+"&project="+projectref.current+"");
           let counter = 1;
           var polygon = [];
           for (var b=0; b<data2.data.length; b++){
               let temp = [];
-              var country = data2.data[b].countries[0].country_name;
+              var country = "Tuvalu";
+              
               var desc2 = data2.data[b].title;
-              var title = data2.data[b].description;
-              var datatype = data2.data[b].data_type.datatype_code;
-              var project = data2.data[b].project.project_code;
-              var is_restricted = data2.data[b].is_restricted;
+              var title = data2.data[b].abstract;
+              var datatype = data2.data[b].dataType.name;
+              var project = data2.data[b].project.name;
+              var is_restricted = data2.data[b].openAccess;
               var email = data2.data[b].contact.email;
               var version = data2.data[b].version;
-              var dtatype = data2.data[b].data_type.id;
-              var extents = data2.data[b].spatial_extents;
-
+              var dtatype = data2.data[b].dataType.id;
+              var extents = data2.data[b].boundingBox;
+              
               var coord_marker = [];
               var coordbbox = [];
               if (dtatype === 6){
-                coord_marker.push(loopToGetCoord(extents,"ymin"))
-                coord_marker.push(loopToGetCoord(extents,"xmin"))
+                coord_marker.push(extents.westBoundLongitude)
+                coord_marker.push(extents.southBoundLatitude)
               var test3 = data2.data[b].id;
               
               marker = L.marker(coord_marker,{icon:redIcon,id:8}).addTo(markersLayer.current).bindPopup("<div style='width: 150px;text-align: center;'>"+ desc2+"</div>",{
@@ -251,20 +162,27 @@ const Home = () => {
               }
               else{
                 var tmp = []
-                tmp.push(loopToGetCoord(extents,"ymin"))
-                tmp.push(loopToGetCoord(extents,"xmin"))
-                coordbbox.push(tmp)
+                tmp.push(extents.southBoundLatitude)
+                tmp.push(extents.westBoundLongitude)
+                //coordbbox.push(tmp)
                 tmp = [];
-                tmp.push(loopToGetCoord(extents,"ymax"))
-                tmp.push(loopToGetCoord(extents,"xmax"))
-                coordbbox.push(tmp)
+                tmp.push(extents.northBoundLatitude	)
+                tmp.push(extents.eastBoundLongitude)
+                //coordbbox.push(tmp)
+
+                const coordbbox = [
+                  [extents.southBoundLatitude, extents.westBoundLongitude],
+                  [extents.northBoundLatitude, extents.eastBoundLongitude]
+              ];
+              
                 var test2 = data2.data[b].id;
                 marker = L.rectangle(coordbbox, {id:8,color: '#FF5733', weight: 3}).addTo(markersLayer.current).bindPopup("<div style='width: 150px; text-align: center;'>"+ desc2+"</div>",{
                   maxWidth: "auto"
               })
-                marker.test = test2;
+               marker.test = test2;
                 marker.type = datatype;
               }
+                
               
 
               temp.push({
@@ -281,14 +199,15 @@ const Home = () => {
               })
               counter = counter + 1;
               polygon.push(temp)
+              
               setobsSource(prevData =>[...prevData, ...temp]);
           }
 
-          fitbbox(mapContainermain.current, mayFlyer(countryref.current))
+        //  fitbbox(mapContainermain.current, mayFlyer(countryref.current))
           //console.log(polygon)
 
           setLoading(true)
-        }
+        
       }
       }
       catch (e){
@@ -315,13 +234,13 @@ const Home = () => {
   };
   const fetchtags = () => {
     axios
-      .get('https://opmdata.gem.spc.int/api/tags')
+      .get('https://dev-oceanportal.spc.int/dbms/api/tag/?format=json')
       .then((response) => {
         const { data } = response;
         if(response.status === 200){
           var temp=[]
           for (var i =0; i <data.length; i++){
-            temp.push({key:data[i].name, label:data[i].name})
+            temp.push({key:data[i].id, label:data[i].name})
           }
             //check the api call is success by stats code 200,201 ...etc
             setTaglist(temp)
@@ -333,7 +252,7 @@ const Home = () => {
   };
   const fetchdatatype = () => {
     axios
-      .get('https://opmdata.gem.spc.int/api/datatypes')
+      .get('https://dev-oceanportal.spc.int/dbms/api/datatype/?format=json')
       .then((response) => {
         const { data } = response;
         if(response.status === 200){
@@ -347,7 +266,7 @@ const Home = () => {
   };
   const fetchcountry = () => {
     axios
-      .get('https://opmdata.gem.spc.int/api/countries')
+      .get('https://dev-oceanportal.spc.int/dbms/api/spatialinfo/?format=json')
       .then((response) => {
         const { data } = response;
         if(response.status === 200){
@@ -362,7 +281,7 @@ const Home = () => {
   };
   const fetchproject = () => {
     axios
-      .get('https://opmdata.gem.spc.int/api/projects')
+      .get('https://dev-oceanportal.spc.int/dbms/api/project/?format=json')
       .then((response) => {
         const { data } = response;
         if(response.status === 200){
@@ -376,13 +295,13 @@ const Home = () => {
   };
   const fetchtopic = () => {
     axios
-      .get('https://opmdata.gem.spc.int/api/topics')
+      .get('https://dev-oceanportal.spc.int/dbms/api/topic/?format=json')
       .then((response) => {
         const { data } = response;
         if(response.status === 200){
           var temp=[]
           for (var i =0; i <data.length; i++){
-            temp.push({key:data[i].name, label:data[i].name})
+            temp.push({key:data[i].id, label:data[i].name})
           }
             //check the api call is success by stats code 200,201 ...etc
             setTopiclist(temp)
@@ -404,14 +323,6 @@ const Home = () => {
       {dataField: "version", text:"Version",style:{fontSize:'13px', padding:'1px'},headerStyle: { backgroundColor: '#215E95', color: 'white'}},
       {dataField: "edit", text:"Action",formatter: rankFormatter,style:{fontSize:'13px', padding:'1px'},headerStyle: { backgroundColor: '#215E95', color: 'white'}}
   ]
-
-  const loopToGetCoord = (extents,pos) =>{
-    for (var i =0; i<extents.length; i++){
-      if(extents[i].extent_name === pos){
-        return extents[i].value;
-      }
-    }
-  }
 
   function addMarker(map, markercoord, id) {
   
@@ -462,13 +373,14 @@ const Home = () => {
   //  console.log('anuj',row)
     setLoading(false)
     
-    const data2 = await axios.get("https://opmdata.gem.spc.int/api/metadata/id/"+row);
+    const data2 = await axios.get("https://dev-oceanportal.spc.int/dbms/api/dataset/"+row+"/?format=json");
     
-    countryFlagRef.current =  require('../flags/'+data2.data[0].countries[0].country_code+'.png')
-
-    var extents = data2.data[0].spatial_extents;
+    countryFlagRef.current =  require('../flags/TUV.png')
+    console.log(data2.data)
+    var extents = data2.data.boundingBox;
     
-    var dtatype = data2.data[0].data_type.id;
+    var dtatype = data2.data.dataType.id;
+    
     if (dtatype === 6){
       isMarkerRef.current = true;
     }
@@ -478,25 +390,19 @@ const Home = () => {
     var coord_marker = [];
     var coordbbox = [];
     if (isMarkerRef.current){
-      coord_marker.push(loopToGetCoord(extents,"ymin"))
-      coord_marker.push(loopToGetCoord(extents,"xmin"))
-      //console.log(coord_marker)
-      markerRef.current = coord_marker;
-      positionRef.current = coord_marker;
-      zoomRef.current = 10;
+      
     }
     else{
-      var tmp = []
-      tmp.push(loopToGetCoord(extents,"ymin"))
-      tmp.push(loopToGetCoord(extents,"xmin"))
-      coordbbox.push(tmp)
-      tmp = [];
-      tmp.push(loopToGetCoord(extents,"ymax"))
-      tmp.push(loopToGetCoord(extents,"xmax"))
-      coordbbox.push(tmp)
+
+      const coordbbox = [
+                  [extents.southBoundLatitude, extents.westBoundLongitude],
+                  [extents.northBoundLatitude, extents.eastBoundLongitude]
+              ];
+              
+    //  coordbbox.push(tmp)
       //console.log(coordbbox)
       bboxRef.current = coordbbox;
-      positionRef.current = tmp;
+      //positionRef.current = tmp;
       zoomRef.current = 4;
       //const map = mapRef.current;
    // console.log('map state', map);
@@ -505,7 +411,8 @@ const Home = () => {
     
       //map.flyTo([-8.541147, 179.196198], 12);
     }
-    const jsonData = JSON.stringify(data2.data[0], null, 2);
+      
+    const jsonData = JSON.stringify(data2.data, null, 2);
     var parameters = [];
     var extentsarr = [];
     var flags = [];
@@ -514,57 +421,39 @@ const Home = () => {
     var sourceurl = [];
 
     var metadata = {};
-    metadata.title = data2.data[0].title;
-    metadata.description = data2.data[0].description;
-    metadata.temporal_coverage_from = data2.data[0].temporal_coverage_from;
-    metadata.temporal_coverage_to = data2.data[0].temporal_coverage_to;
-    metadata.language = data2.data[0].language;
-    metadata.version = data2.data[0].version;
-    metadata.is_restricted = String(data2.data[0].is_restricted);
-    metadata.is_checked = String(data2.data[0].is_checked);
-    metadata.createdAt = data2.data[0].createdAt;
-    metadata.data_type = data2.data[0].data_type.datatype_code;
-    metadata.country = data2.data[0].countries[0].country_name;
-    metadata.spatial_projection = data2.data[0].spatial_projection.name;
-    metadata.project = data2.data[0].project.project_name;
-    metadata.organization = data2.data[0].organization.name;
-    metadata.contact = data2.data[0].contact.email;
-    metadata.license = data2.data[0].license.name;
+    metadata.title = data2.data.title;
+    metadata.description = data2.data.abstract;
+    metadata.temporal_coverage_from = data2.data.temporalCoverageFrom	;
+    metadata.temporal_coverage_to = data2.data.temportalCoverageTo	;
+    metadata.language = data2.data.language;
+    metadata.version = data2.data.version;
+    metadata.is_restricted = String(data2.data.openAccess);
+    metadata.data_type = data2.data.dataType.name;
+    metadata.country = "Tuvalu";
+    metadata.spatial_projection = data2.data.GeoReferenceSystem;
+    metadata.project = data2.data.project.name;
+    metadata.organization = data2.data.publisher;
+    metadata.contact = data2.data.contact.email;
+    metadata.license = data2.data.license;
     
-    for (var h =0; h<data2.data[0].flags.length; h++){
-      flags.push(data2.data[0].flags[h].name)
-    }
-    metadata.flags = flags;
 
-    for (var i =0; i<data2.data[0].topics.length; i++){
-      topics.push(data2.data[0].topics[i].name)
+    for (var i =0; i<data2.data.Topic.length; i++){
+      topics.push(data2.data.Topic[i].name)
     }
     metadata.topics = topics;
 
-    for (var j =0; j<data2.data[0].tags.length; j++){
-      tags.push(data2.data[0].tags[j].name)
+    for (var j =0; j<data2.data.Tag.length; j++){
+      tags.push(data2.data.Tag[j].name)
     }
     metadata.tags = tags;
-
-    for (var k =0; k<data2.data[0].sourceurls.length; k++){
-      sourceurl.push(data2.data[0].sourceurls[k].value)
+    var src_url =  data2.data.LocalAccessPath;
+    if(data2.data.LocalAccessPath === null){
+      src_url = data2.data.file;
     }
-    metadata.sourceurl = sourceurl.join(', ') === "" ? "NAN" : sourceurl.join(', ');
-
-    for (var l =0; l<data2.data[0].spatial_extents.length; l++){
-      extentsarr.push(data2.data[0].spatial_extents[l].extent_name+"="+data2.data[0].spatial_extents[l].value)
-    }
-    metadata.extents = extents.join(', ') === "" ? "NAN" : extentsarr.join(', ');
-
-    for (var m =0; m<data2.data[0].parameters.length; m++){
-      parameters.push(data2.data[0].parameters[m].short_name)
-    }
-    
-    if (parameters.length === 0) {parameters.push('NAN') }
-    metadata.parameters = parameters;
-
-    metadata.updatedAt = data2.data[0].updatedAt;
-    metadata.created_by = data2.data[0].created_by.email;
+    metadata.extents = "westBoundLongitude="+data2.data.boundingBox.westBoundLongitude;
+    metadata.sourceurl = src_url;
+    metadata.updated_at = data2.data.updated_at;
+    metadata.created_at = data2.data.created_at;
 
 
     setTable(metadata)
@@ -578,103 +467,6 @@ const Home = () => {
     
   }
 
-  const editData = async (row) => {
-    if (unauthorized){
-      setCss('btn btn-warning')
-      setHeader('Warning')
-      setMessage('Unauthorized access. Please Login!')
-      setinfoshow22(true)
-    }
-    else{
-    setLoading(false)
-    const data2 = await axios.get("https://opmdata.gem.spc.int/api/metadata/id/"+row.idx);
-    
-    var metadata = {};
-    /*
-    var employees = []
-    metadata.employees = employees;
-
-    var firstName = "John";
-    var lastName = "Smith";
-    var employee = {
-      "firstName": firstName,
-      "lastName": lastName
-    }
-    metadata.employees.push(employee);*/
-
-    var country = data2.data[0].countries;
-    var country_arr = [];
-    for (var i =0; i<country.length; i++){
-      country_arr.push(country[i].country_code)
-    }
-
-    metadata.id = data2.data[0].id;
-    metadata.title = data2.data[0].title;
-    metadata.description = data2.data[0].description;
-    metadata.temporal_coverage_from = data2.data[0].temporal_coverage_from;
-    metadata.temporal_coverage_to = data2.data[0].temporal_coverage_to;
-    //metadata.language = data2.data[0].language;
-    //metadata.version = data2.data[0].version;
-    metadata.data_type = data2.data[0].data_type.id;
-    metadata.spatial_projection_id = data2.data[0].spatial_projection.id;
-    metadata.license_id = data2.data[0].license.id;
-    metadata.publisher_id = data2.data[0].organization.id;
-    metadata.project_id = data2.data[0].project.id;
-    metadata.contact_id = data2.data[0].contact.id;
-    metadata.countries = country_arr;
-    metadata.is_checked = data2.data[0].is_checked;
-    metadata.is_restricted = data2.data[0].is_restricted;
-    metadata.user_created_id = data2.data[0].created_by.id;
-
-    var params = data2.data[0].parameters;
-    var params_arr = [];
-    for (var a =0; a<params.length; a++){
-      params_arr.push(params[a].short_name)
-    }
-    metadata.parameters = params_arr;
-
-    var tag = data2.data[0].tags;
-    var tag_arr = [];
-    for (var j =0; j<tag.length; j++){
-      tag_arr.push(tag[j].id)
-    }
-    metadata.tag = tag_arr;
-
-    var topic = data2.data[0].topics;
-    var topic_arr = [];
-    for (var k =0; k<topic.length; k++){
-      topic_arr.push(topic[k].id)
-    }
-    metadata.topic = topic_arr;
-
-    var flag = data2.data[0].flags;
-    var flag_arr = [];
-    for (var l =0; l<flag.length; l++){
-      flag_arr.push(flag[l].id)
-    }
-    metadata.flag = flag_arr;
-
-    var extents = data2.data[0].spatial_extents;
-    var extent_arr = [];
-    for (var m =0; m<extents.length; m++){
-      extent_arr.push({name: extents[m].extent_name , value: extents[m].value})
-    }
-    metadata.extents = extent_arr;
-
-    var urls = data2.data[0].sourceurls;
-    var url_arr = [];
-    for (var n =0; n<urls.length; n++){
-      url_arr.push({url: urls[n].url_name , path: urls[n].value})
-    }
-    metadata.urls = url_arr;
-    var dataaa = JSON.stringify(metadata,null,2)
-    infotext2Ref.current = dataaa;
-    setinfotext2(dataaa)
-    setMetadata(dataaa)
-    setLoading(true)
-    setinfoshow2(true)
-  }
-  }
   function rankFormatter(cell, row, rowIndex, formatExtraData) { 
       //console.log(cell)
       return ( 
@@ -683,7 +475,7 @@ const Home = () => {
                    cursor: "pointer",
                   lineHeight: "normal" }}>
                       
-              <MdOutlinePageview  style={{width:"23px",height:"23px"}} onClick={() => {getOneData(row.idx)}}/> &nbsp;<FaEdit style={{width:"18px",height:"18px",paddingBottom:'2px' }} onClick={() => {editData(row)}}/>
+              <MdOutlinePageview  style={{width:"23px",height:"23px"}} onClick={() => {getOneData(row.idx)}}/> 
        </div> 
   ); } 
 
@@ -760,6 +552,7 @@ mapContainermain.current.on(L.Draw.Event.CREATED, function(e) {
 
 });
 markersLayer.current = L.featureGroup().addTo(mapContainermain.current).on("click", groupClick);
+fitbbox(mapContainermain.current, mayFlyer('TUV'))
   }
   function findDuplicateArrayIndices(arrays) {
     const indexMap = new Map();
@@ -991,32 +784,9 @@ mapContainer.current.on(L.Draw.Event.CREATED, function(e) {
       </div>
       </div>
       <div className="row" style={{marginTop:'0px'}}>
-    <div className="col-sm-4">
-    <div className="form-group form-select-sm" style={{textAlign:'left'}}>
-      <label htmlFor="exampleInputEmail1">Country</label> <span style={{ color: 'red' }}>*</span>
-      <select  className="form-select form-select-sm"  id="exampleInputEmail2" aria-label=".form-select-sm example"
-              disabled={false}
-              value={country}
-              onChange={(e) => {
-                countryref.current = e.currentTarget.value;
-                fitbbox(mapContainermain.current, mayFlyer(e.currentTarget.value))
-                setCountry(e.currentTarget.value)
-                e.currentTarget.blur();}}
-                
-                
-          >
-            <option value="%">-- Select --</option>
-              {countrylist.map((item) => (
-              <option key={item.country_code} value={item.country_code}>
-                  {item.country_name}
-              </option>
-              ))}
-          </select>
-    </div>
-      </div>
-      <div className="col-sm-4">
+      <div className="col-sm-6">
       <div className="form-group form-select-sm" style={{textAlign:'left'}}>
-      <label htmlFor="exampleInputEmail1">Data Type</label> <span style={{ color: 'red' }}>*</span>
+      <label htmlFor="exampleInputEmail1">Data Type</label> 
       <select  className="form-select form-select-sm"  id="exampleInputEmail2" aria-label=".form-select-sm example"
               value={datatype}
               onChange={(e) => {
@@ -1024,17 +794,17 @@ mapContainer.current.on(L.Draw.Event.CREATED, function(e) {
                 setDatatype(e.currentTarget.value)
                 e.currentTarget.blur();}}
           >
-             <option value="%">-- Select --</option>
+             <option key="value" value="all">-- Select --</option>
               {datatypelist.map((item) => (
-              <option key={item.datatype_code} value={item.datatype_code}>
-                  {item.datatype_name}
+              <option key={item.id} value={item.id}>
+                  {item.name}
               </option>
               ))}
           </select>
     </div>
 
   </div>
-  <div className="col-sm-4">
+  <div className="col-sm-6">
   <div className="form-group form-select-sm" style={{textAlign:'left'}}>
       <label htmlFor="exampleInputEmail1">Project</label>
       <select  className="form-select form-select-sm"  id="exampleInputEmail2" aria-label=".form-select-sm example"
@@ -1045,10 +815,10 @@ mapContainer.current.on(L.Draw.Event.CREATED, function(e) {
                 setProject(e.currentTarget.value)
                 e.currentTarget.blur();}}
           >
-            <option value="%">-- Select --</option>
+            <option value="all">-- Select --</option>
               {projectlist.map((item) => (
-              <option key={item.project_code} value={item.project_code}>
-                  {item.project_name}
+              <option key={item.id} value={item.id}>
+                  {item.name}
               </option>
               ))}
           </select>
@@ -1059,32 +829,55 @@ mapContainer.current.on(L.Draw.Event.CREATED, function(e) {
       <div className="row" style={{marginTop:'0px'}}>
     <div className="col-sm-6">
     <div className="form-group form-select-sm" style={{textAlign:'left'}}>
-      <label htmlFor="exampleInputEmail1">Parameters</label>
-      <Multiselect
-          backgroundcolor="#0e1111" 
-          displayValue="label"
-          placeholder="--Select Parameters--"
-          isObject={true}
-          closeOnSelect={false}
-          blurInputOnSelect={true}
-          closeMenuOnSelect={false}
-          selectionLimit={1}
-          onSelect={(event) => {
-            setParameter(event);
-          }}
-          onRemove={(event) => {
-            setParameter([{key:'%',label:"%"}]);
-          }}
-          options={parameterlist}
-          showCheckbox
-          avoidHighlightFirstOption
-        />
+      <label htmlFor="exampleInputEmail1">Spatial Info</label>
+      <select  className="form-select form-select-sm"  id="exampleInputEmail2" aria-label=".form-select-sm example"
+              disabled={false}
+              value={country}
+              onChange={(e) => {
+                countryref.current = e.currentTarget.value;
+                //fitbbox(mapContainermain.current, mayFlyer(e.currentTarget.value))
+                setCountry(e.currentTarget.value)
+                e.currentTarget.blur();}}
+                
+                
+          >
+            <option value="all">-- Select --</option>
+              {countrylist.map((item) => (
+              <option key={item.id} value={item.id}>
+                  {item.name}
+              </option>
+              ))}
+          </select>
     </div>
       </div>
       <div className="col-sm-6">
     <div className="form-group form-select-sm" style={{textAlign:'left'}}>
-      <label htmlFor="exampleInputEmail1">Tag</label>
-      
+      <label htmlFor="exampleInputEmail1">Open Access</label>
+      <select  className="form-select form-select-sm"  id="exampleInputEmail2" aria-label=".form-select-sm example"
+              disabled={false}
+              value={openRef.current}
+              onChange={(e) => {
+              //  countryref.current = e.currentTarget.value;
+                //fitbbox(mapContainermain.current, mayFlyer(e.currentTarget.value))
+               // setOpenlist(e.currentTarget.value)
+                openRef.current = e.currentTarget.value;
+                e.currentTarget.blur();}}
+                
+                
+          >
+            <option value="all">-- Select --</option>
+            <option key= "1" value="True">Open Access</option>
+            <option key="2" value="False">Restricted Access</option>
+          </select>
+     
+  
+    </div>
+      </div>
+      </div>
+      <div className="row" style={{marginTop:'0px'}}>
+      <div className="col-sm-6">
+      <div className="form-group form-select-sm" style={{textAlign:'left'}}>
+      <label htmlFor="exampleInputEmail1">Tag</label> 
       <Multiselect
           displayValue="label"
           isObject={true}
@@ -1096,19 +889,18 @@ mapContainer.current.on(L.Draw.Event.CREATED, function(e) {
             setTag(event);
           }}
           options={taglist}
-          selectedValues={[{key:1,label:"Oceanography"}]}
+          selectedValues={[]}
           showCheckbox
           selectionLimit={1}
           avoidHighlightFirstOption
         />
-  
     </div>
-      </div>
-      </div>
-      <div className="row" style={{marginTop:'0px'}}>
-      <div className="col-sm-6">
-      <div className="form-group form-select-sm" style={{textAlign:'left'}}>
+
+  </div>
+  <div className="col-sm-6">
+    <div className="form-group form-select-sm" style={{textAlign:'left'}}>
       <label htmlFor="exampleInputEmail1">Topic</label> 
+      
       <Multiselect
           displayValue="label"
           isObject={true}
@@ -1119,46 +911,14 @@ mapContainer.current.on(L.Draw.Event.CREATED, function(e) {
             setTopic(event);
           }}
           options={topiclist}
-          selectedValues={[{key:1,label:"Geoscience"}]}
+          selectedValues={[{key:1,label:"ocean"}]}
           showCheckbox
           selectionLimit={1}
           avoidHighlightFirstOption 
         />
-    </div>
-
-  </div>
-  <div className="col-sm-6">
-    <div className="form-group form-select-sm" style={{textAlign:'left'}}>
-      <label htmlFor="exampleInputEmail1">Publisher</label> 
-      
-      <Multiselect
-      style={{backgroundColor:'red', color:'red', height:"5px", marginTop:"10px"}}
-          displayValue="label"
-          isObject={true}
-          closeMenuOnSelect={false}
-          options={[{key:1,label:"Pacific Community"}]}
-          selectedValues={[{key:1,label:"Pacific Community"}]}
-          showCheckbox
-          avoidHighlightFirstOption
-        />
   
     </div>
       </div>
-      </div>
-      <div className="row" style={{marginTop:'0px'}}>
-      <div className="col-sm-3">
-      <div className="form-group form-select-sm" style={{textAlign:'left'}}>
-      <input className="form-check-input" type="checkbox" id="fj_ezz" name="fj_ezz" onChange={handleClick} defaultChecked={checked} />&nbsp;
-  <label className="form-check-label">Activate Search by Extent</label>
-        </div>
-        </div>
-        <div className="col-sm-9">
-        {checked ?
-        <div className="form-group form-select-sm" style={{textAlign:'left'}}>
-    <input type="email" className="form-control form-select-sm" id="exampleInputEmail3" aria-describedby="emailHelp" placeholder="Draw polygon on map" disabled value={extentref.current}/>
-    </div>
-    :null}
-    </div>
       </div>
       
       <div className="row" style={{marginTop:'5px'}}>
@@ -1252,7 +1012,7 @@ mapContainer.current.on(L.Draw.Event.CREATED, function(e) {
       <td>{table.title}</td>
     </tr>
     <tr>
-      <td>Description</td>
+      <td>Abstract</td>
       <td>{table.description}</td>
     </tr>
     <tr>
@@ -1296,16 +1056,6 @@ mapContainer.current.on(L.Draw.Event.CREATED, function(e) {
       <td>{table.contact}</td>
     </tr>
     <tr>
-      <td>Flags</td>
-      <td>
-      {table.flags.map(flags => {
-           return (
-          <>  <span class="badge bg-secondary" style={{fontSize:'14px'}}>{flags}</span>&nbsp;</>
-           )
-         })}
-         </td>
-    </tr>
-    <tr>
       <td>Tags</td>
       <td>
       {table.tags.map(tags => {
@@ -1326,20 +1076,6 @@ mapContainer.current.on(L.Draw.Event.CREATED, function(e) {
          </td>
     </tr>
     <tr>
-      <td>Parameters</td>
-      <td>
-      {table.parameters.map(parameters => {
-           return (
-          <>  <span class="badge bg-info text-dark" style={{fontSize:'14px'}}>{parameters}</span>&nbsp;</>
-           )
-         })}
-         </td>
-    </tr>
-    <tr>
-      <td>Spatial Extents</td>
-      <td>{table.extents}</td>
-    </tr>
-    <tr>
       <td>Spatial Projection</td>
       <td> <span class="badge bg-warning text-dark" style={{fontSize:'14px'}}>{table.spatial_projection}</span></td>
     </tr>
@@ -1348,16 +1084,12 @@ mapContainer.current.on(L.Draw.Event.CREATED, function(e) {
       <td>{table.sourceurl}</td>
     </tr>
     <tr>
-      <td>Checked</td>
-      <td>{String(table.is_checked)}</td>
-    </tr>
-    <tr>
       <td>Created at</td>
-      <td>{table.createdAt}</td>
+      <td>{table.created_at}</td>
     </tr>
     <tr>
       <td>Updated at</td>
-      <td>{table.updatedAt}</td>
+      <td>{table.updated_at}</td>
     </tr>
     <tr>
       <td>License</td>
@@ -1398,7 +1130,7 @@ mapContainer.current.on(L.Draw.Event.CREATED, function(e) {
          </div>
         </Modal.Body>
         <Modal.Footer>
-        <Button variant="warning" onClick={handleUpdate}>
+        <Button variant="warning">
             Update
           </Button>
           <Button variant="secondary" onClick={handleinfo2}>

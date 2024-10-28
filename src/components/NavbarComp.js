@@ -29,13 +29,13 @@ export default class NavbarComp extends Component {
             <Router>
             <div>
         <Navbar expand="lg" bg={"navbar navbar-expand-sm navbar-custom"} variant={"dark"} style={{paddingRight:"1%",paddingLeft:"1%"}}>
-        <Navbar.Brand as={Link} to={"/oceandata"}>Ocean Data Explorer</Navbar.Brand>
+        <Navbar.Brand as={Link} to={"/exploredata"}>Ocean Data Explorer</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
-            <Nav.Link as={Link} to={"/oceandata"}>Home</Nav.Link>
-            <Nav.Link as={Link} to={"/oceandata/add"}>Add</Nav.Link>
-            <Nav.Link as={Link} to={"/oceandata/search"}>Search</Nav.Link>
+            <Nav.Link as={Link} to={"/exploredata"}>Home</Nav.Link>
+            <Nav.Link as={Link} to={"/exploredata/add"}>Add</Nav.Link>
+            <Nav.Link as={Link} to={"/exploredata/search"}>Search</Nav.Link>
             <NavDropdown title="Dropdown" id="basic-nav-dropdown">
               <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
               <NavDropdown.Item href="#action/3.2">
@@ -49,8 +49,8 @@ export default class NavbarComp extends Component {
             </NavDropdown>
           </Nav>
           <Form inline="true">
-            <Button variant="warning" className="mr-sm-4" as={Link} to={"/oceandata/login"}>Login</Button>&nbsp;
-            <Button variant="warning" className="mr-sm-2" as={Link} to={"/oceandata/signup"} >Sign up!</Button>
+            <Button variant="warning" className="mr-sm-4" as={Link} to={"/exploredata/login"}>Login</Button>&nbsp;
+            <Button variant="warning" className="mr-sm-2" as={Link} to={"/exploredata/signup"} >Sign up!</Button>
           </Form>
         </Navbar.Collapse>
     </Navbar>
@@ -58,12 +58,12 @@ export default class NavbarComp extends Component {
             <div>
 
             <Routes>
-            <Route path="/oceandata/home" element={<Home/>} />
-          <Route path="/oceandata/add" element={<Add/>} />
-          <Route path="/oceandata/search" element={<Search/>} />
-          <Route path="/oceandata/login" element={<Login/>} />
-          <Route path="/oceandata/signup" element={<Signup/>} />
-          <Route path="/oceandata" element={<Home />} />
+            <Route path="/exploredata/home" element={<Home/>} />
+          <Route path="/exploredata/add" element={<Add/>} />
+          <Route path="/exploredata/search" element={<Search/>} />
+          <Route path="/exploredata/login" element={<Login/>} />
+          <Route path="/exploredata/signup" element={<Signup/>} />
+          <Route path="/exploredata" element={<Home />} />
           <Route path="/" element={<Home />} />
         </Routes>
             </div>

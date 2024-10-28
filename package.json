@@ -1,8 +1,8 @@
 {
-  "name": "oceandata",
+  "name": "exploredata",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://opm.gem.spc.int/oceandata",
+  "homepage": "https://opm.gem.spc.int/exploredata",
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -22,6 +22,7 @@
     "react-bootstrap-table2-paginator": "^2.1.2",
     "react-datepicker": "^6.3.0",
     "react-dom": "^18.2.0",
+    "react-dropzone": "^14.2.10",
     "react-icons": "^5.0.1",
     "react-json-pretty": "^2.2.0",
     "react-leaflet": "^4.2.1",

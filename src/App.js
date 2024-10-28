@@ -18,7 +18,7 @@ import Login from './pages/login';
 import Signup from './pages/signup';
 import AuthService from "./services/auth.service";
 import EventBus from "./common/EventBus";
-
+import AddDataSet from './pages/addDataSet';
 function App() {
 
   const [showAdminBoard, setShowAdminBoard] = useState(false);
@@ -52,6 +52,11 @@ function App() {
     
   };
 
+  const handleRedirect = () => {
+    window.open('https://dev-oceanportal.spc.int/dbms/admin', '_blank', 'noopener,noreferrer');
+};
+
+
   return (
     <div className="App">
       
@@ -59,30 +64,26 @@ function App() {
             <div>
         <Navbar expand="lg" bg={"navbar navbar-expand-sm navbar-custom"} variant={"dark"} style={{paddingRight:"1%",paddingLeft:"1%"}}>
         
-        <img src={require('./assets/images/spx.png')} alt='logo' style={{marginLeft:'-0.7%',marginTop:'-0.7%',marginBottom:'-0.7%', width:"90px", height:"50px"}}/>
-        <Navbar.Brand as={Link} to={"/oceandata"}>
+        <img src={require('./assets/images/TV.png')} alt='logo' style={{marginLeft:'-0.7%',marginTop:'-0.5%',marginBottom:'-0.5%', width:"90px", height:"48px"}}/>
+        <Navbar.Brand as={Link} to={"/exploredata"}>
           
-          &nbsp;Ocean Data Explorer</Navbar.Brand>
+          &nbsp; Data Explorer</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
-            <Nav.Link as={Link} to={"/oceandata"}>Home</Nav.Link>
-            {showAdminBoard && (
-           <Nav.Link as={Link} to={"/oceandata/add"}>Add</Nav.Link>
-          )}
+            <Nav.Link as={Link} to={"/exploredata"}>Home</Nav.Link>
 
             
-           {/*<Nav.Link as={Link} to={"/oceandata/search"}>Request</Nav.Link>*/}
+           {/*<Nav.Link as={Link} to={"/exploredata/search"}>Request</Nav.Link>*/}
           </Nav>
           {currentUser ? (
              <Form inline="true">
-             <Button variant="warning" className="mr-sm-4" as={Link} to={"/oceandata/login"} onClick={logOut}>{username}:Logout</Button>
+             <Button variant="warning" className="mr-sm-4" as={Link} to={"/exploredata/login"} onClick={logOut}>{username}:Logout</Button>
            </Form>
          
         ) : (
           <Form inline="true">
-            <Button style={{color:'#215E95'}} variant="warning" className="mr-sm-4" as={Link} to={"/oceandata/login"}>Login</Button>&nbsp;
-            <Button style={{color:'#215E95'}} variant="warning" className="mr-sm-2" as={Link} to={"/oceandata/signup"} >Sign up!</Button>
+            <Button style={{color:'#215E95'}} variant="warning" className="mr-sm-4" as={Link} onClick={handleRedirect}>Login!</Button>
           </Form>
           )}
         </Navbar.Collapse>
@@ -91,12 +92,9 @@ function App() {
             <div>
 
             <Routes>
-            <Route path="/oceandata/home" element={<Home/>} />
-          <Route path="/oceandata/add" element={<Add/>} />
-          <Route path="/oceandata/search" element={<Search/>} />
-          <Route path="/oceandata/login" element={<Login/>} />
-          <Route path="/oceandata/signup" element={<Signup/>} />
-          <Route path="/oceandata" element={<Home />} />
+            <Route path="/exploredata/home" element={<Home/>} />
+          <Route path="/exploredata/login" element={<Login/>} />
+          <Route path="/exploredata" element={<Home />} />
           <Route path="/" element={<Home />} />
         </Routes>
             </div>
