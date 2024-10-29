@@ -19,7 +19,11 @@ import Signup from './pages/signup';
 import AuthService from "./services/auth.service";
 import EventBus from "./common/EventBus";
 import AddDataSet from './pages/addDataSet';
+import config from './pages/config.json';
+
 function App() {
+
+const apiUrl = config.api.baseUrl;
 
   const [showAdminBoard, setShowAdminBoard] = useState(false);
   const [currentUser, setCurrentUser] = useState(undefined);
@@ -53,7 +57,7 @@ function App() {
   };
 
   const handleRedirect = () => {
-    window.open('https://dev-oceanportal.spc.int/dbms/admin', '_blank', 'noopener,noreferrer');
+    window.open(`${apiUrl}/dbms/admin`, '_blank', 'noopener,noreferrer');
 };
 
 

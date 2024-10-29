@@ -22,10 +22,14 @@ import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import config from './config.json';
+
 
 toast.configure()
 
 const Home = () => {
+
+const apiUrl = config.api.baseUrl;
 
   //VARIABLES
   const markersLayer = useRef(null);
@@ -128,7 +132,7 @@ const Home = () => {
         console.log('anujjj')
        var marker;
           //const data2 = await axios.get("https://dev-oceanportal.spc.int/dbms/api/dataset/?format=json");
-          const data2 = await axios.get("https://dev-oceanportal.spc.int/dbms/api/dataset/?SpatialInfo="+countryref.current+"&Tag="+tag[0].key+"&Topic="+topic[0].key+"&dataType="+datatyperef.current+"&format=json&openAccess="+openRef.current+"&project="+projectref.current+"");
+          const data2 = await axios.get(`${apiUrl}/dbms/api/dataset/?SpatialInfo=`+countryref.current+"&Tag="+tag[0].key+"&Topic="+topic[0].key+"&dataType="+datatyperef.current+"&format=json&openAccess="+openRef.current+"&project="+projectref.current+"");
           let counter = 1;
           var polygon = [];
           for (var b=0; b<data2.data.length; b++){
@@ -144,7 +148,7 @@ const Home = () => {
               var version = data2.data[b].version;
               var dtatype = data2.data[b].dataType.id;
               var extents = data2.data[b].boundingBox;
-              
+              console.log(extents)
               var coord_marker = [];
               var coordbbox = [];
               if (dtatype === 6){
@@ -234,7 +238,7 @@ const Home = () => {
   };
   const fetchtags = () => {
     axios
-      .get('https://dev-oceanportal.spc.int/dbms/api/tag/?format=json')
+      .get(`${apiUrl}/dbms/api/tag/?format=json`)
       .then((response) => {
         const { data } = response;
         if(response.status === 200){
@@ -252,7 +256,7 @@ const Home = () => {
   };
   const fetchdatatype = () => {
     axios
-      .get('https://dev-oceanportal.spc.int/dbms/api/datatype/?format=json')
+      .get(`${apiUrl}/dbms/api/datatype/?format=json`)
       .then((response) => {
         const { data } = response;
         if(response.status === 200){
@@ -266,7 +270,7 @@ const Home = () => {
   };
   const fetchcountry = () => {
     axios
-      .get('https://dev-oceanportal.spc.int/dbms/api/spatialinfo/?format=json')
+      .get(`${apiUrl}/dbms/api/spatialinfo/?format=json`)
       .then((response) => {
         const { data } = response;
         if(response.status === 200){
@@ -281,7 +285,7 @@ const Home = () => {
   };
   const fetchproject = () => {
     axios
-      .get('https://dev-oceanportal.spc.int/dbms/api/project/?format=json')
+      .get(`${apiUrl}/dbms/api/project/?format=json`)
       .then((response) => {
         const { data } = response;
         if(response.status === 200){
@@ -295,7 +299,7 @@ const Home = () => {
   };
   const fetchtopic = () => {
     axios
-      .get('https://dev-oceanportal.spc.int/dbms/api/topic/?format=json')
+      .get(`${apiUrl}/dbms/api/topic/?format=json`)
       .then((response) => {
         const { data } = response;
         if(response.status === 200){
@@ -373,7 +377,7 @@ const Home = () => {
   //  console.log('anuj',row)
     setLoading(false)
     
-    const data2 = await axios.get("https://dev-oceanportal.spc.int/dbms/api/dataset/"+row+"/?format=json");
+    const data2 = await axios.get(`${apiUrl}/dbms/api/dataset/`+row+"/?format=json");
     
     countryFlagRef.current =  require('../flags/TUV.png')
     console.log(data2.data)
